@@ -13,19 +13,19 @@ export const register = async (req: Request, res: Response) => {
 
   try {
     await registerUser(username, password);
-    res.json({ message: "✅ User registered" });
+    return res.json({ message: "✅ User registered" });
   } catch (err: unknown) {
-    if (err instanceof Error) {
-      const dbErr = err as DatabaseError;
-
-      if (dbErr.code === "23505") {
-        return res.status(400).json({ error: "Username already exists" });
-      }
-
-      return res.status(500).json({ error: dbErr.message });
+    if (!(err instanceof Error)) {
+      return res.status(500).json({ error: "Unknown server error" });
     }
 
-    res.status(500).json({ error: "Unknown server error" });
+    const dbErr = err as DatabaseError;
+
+    if (dbErr.code === "23505") {
+      return res.status(400).json({ error: "Username already exists" });
+    }
+
+    return res.status(500).json({ error: dbErr.message });
   }
 };
 

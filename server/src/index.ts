@@ -20,7 +20,7 @@ app.use(express.json());
   }
 })();
 
-// Rute
+
 app.use("/auth", authRoutes);
 
 app.listen(4000, () => console.log("🚀 Server running on port 4000"));
