@@ -34,6 +34,11 @@ export interface Game {
   updated_at: Date;
 }
 
+export interface Position {
+  row: number;
+  col: number;
+}
+
 export async function createGame(
   type: "single" | "multi",
   playerX: number

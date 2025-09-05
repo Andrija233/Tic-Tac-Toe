@@ -1,4 +1,4 @@
-import { Game, Move, updateGameMoves } from "../models/game";
+import { Game, Move, Position, updateGameMoves, getGamesByUser, createGame, getGameById, joinGame } from "../models/game";
 
 export function inBounds(row: number, col: number): boolean {
   return Number.isInteger(row) && Number.isInteger(col) && row >= 0 && row < 3 && col >= 0 && col < 3;
@@ -7,7 +7,6 @@ export function inBounds(row: number, col: number): boolean {
 export function isCellFree(game: Game, row: number, col: number): boolean {
   return !game.moves.some(m => m.row === row && m.col === col);
 }
-
 
 export function isValidMove(game: Game, row: number, col: number): boolean {
   return inBounds(row, col) && isCellFree(game, row, col);
@@ -32,8 +31,12 @@ export function checkWinner(moves: Move[]): "X" | "O" | "draw" | null {
   ];
 
   for (const line of lines) {
-    if (line.every(cell => cell === "X")) return "X";
-    if (line.every(cell => cell === "O")) return "O";
+    if (line.every(cell => cell === "X")) {
+      return "X";
+    }
+    if (line.every(cell => cell === "O")) {
+      return "O";
+    }
   }
 
   if (moves.length === 9) return "draw";
@@ -86,7 +89,23 @@ export async function makeMove(
   return updateGameMoves(game.id, newMoves, nextTurn, status, winner);
 }
 
-export function getAvailableMoves(game: Game): { row: number; col: number }[] {
+export function getGamesByUserService(userId: number) : Promise<Game[]> {
+  return getGamesByUser(userId);
+}
+
+export function createGameService(type: "single" | "multi", playerX: number) : Promise<Game> {
+  return createGame(type, playerX);
+}
+
+export function  getGameService(gameId: number) : Promise<Game | null> {
+  return getGameById(gameId);
+}
+
+export function joinGameService(gameId: number, userId: number) : Promise<Game | null> {
+  return joinGame(gameId, userId);
+}
+
+export function getAvailableMoves(game: Game): Position[] {
   const allMoves = Array.from({ length: 3 }, (_, r) =>
     Array.from({ length: 3 }, (_, c) => ({ row: r, col: c }))
   ).flat();
@@ -96,7 +115,7 @@ export function getAvailableMoves(game: Game): { row: number; col: number }[] {
   );
 }
 
-export function aiMove(game: Game): { row: number; col: number } | null {
+export function aiMove(game: Game): Position | null {
   const available = getAvailableMoves(game);
   if (available.length === 0) {
     return null;
