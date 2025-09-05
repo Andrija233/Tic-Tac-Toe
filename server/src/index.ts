@@ -4,9 +4,19 @@ import { pool } from "./db";
 import authRoutes from "./routes/auth";
 import { createUserTable } from "./models/user";
 import { createGameTable } from "./models/game";
-import { auth } from "./middleware/auth";
+import gameRoutes from "./routes/game";
+import { initIO } from "./socket";
+import http, { Server as HttpServer } from "http";
+import dotenv from "dotenv";
+
+dotenv.config();
+
+
 
 const app = express();
+const server: HttpServer = http.createServer(app);
+
+const io = initIO(server);
 app.use(cors());
 app.use(express.json());
 
@@ -22,5 +32,10 @@ app.use(express.json());
 
 
 app.use("/auth", authRoutes);
+app.use("/game", gameRoutes);
 
-app.listen(4000, () => console.log("🚀 Server running on port 4000"));
+
+const PORT = process.env.PORT || 4000;
+server.listen(PORT, () => {
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
+});

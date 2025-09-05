@@ -2,7 +2,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { createUser, findUserByUsername } from "../models/user";
 
-interface TokenPayload {
+interface JwtPayload {
   id: number;
   username: string;
 }
@@ -24,7 +24,7 @@ export const loginUser = async (username: string, password: string) => {
   } 
   
   const token = jwt.sign(
-    { id: user.id, username: user.username } as TokenPayload,
+    { id: user.id, username: user.username } as JwtPayload,
     process.env.JWT_SECRET as string,
     { expiresIn: "1h" }
   );
