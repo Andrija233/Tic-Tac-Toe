@@ -10,6 +10,8 @@ export async function createGame(req: Request, res: Response) {
     const { type } = req.body;
 
     const game = await GameService.createGameService(type, req.user.id);
+    const games = await GameService.getAllGamesService();
+    getIO().emit("allGamesUpdated", games);
     res.json(game);
   } catch (err) {
     res.status(500).json({ error: "Error creating game" });
@@ -23,6 +25,10 @@ export async function joinGame(req: Request, res: Response) {
     }
 
     const gameId = parseInt(req.params.id, 10);
+    const getGame = await GameService.getGameService(gameId);
+    if(getGame?.player_x === req.user.id || getGame?.player_o === req.user.id) {
+      return res.status(400).json({ error: "You are already in the game" });
+    }
     const game = await GameService.joinGameService(gameId, req.user.id);
 
     if (!game) {
@@ -30,6 +36,9 @@ export async function joinGame(req: Request, res: Response) {
     }
 
     getIO().to(`game-${gameId}`).emit("joined", game);
+
+    const games = await GameService.getAllGamesService();
+    getIO().emit("allGamesUpdated", games);
 
     res.json(game);
   } catch (err) {
@@ -54,6 +63,12 @@ export async function makeMove(req: Request, res: Response) {
     const updated = await GameService.makeMove(game, row, col, player);
 
     getIO().to(`game-${gameId}`).emit("move", updated);
+
+    if (["X","O","draw"].includes(updated.winner || "")) {
+      const games = await GameService.getAllGamesService();
+      getIO().emit("allGamesUpdated", games);
+    }
+
 
     res.json(updated);
   } catch (err) {
@@ -80,6 +95,15 @@ export async function getUserGames(req: Request, res: Response) {
       return res.status(401).json({ error: "Unauthorized" });
     }
     const games = await GameService.getGamesByUserService(req.user.id);
+    res.json(games);
+  } catch {
+    res.status(500).json({ error: "Error fetching history" });
+  }
+}
+
+export async function getAllGames(req: Request, res: Response) {
+  try {
+    const games = await GameService.getAllGamesService();
     res.json(games);
   } catch {
     res.status(500).json({ error: "Error fetching history" });

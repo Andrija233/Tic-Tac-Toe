@@ -1,4 +1,4 @@
-import { Game, Move, Position, updateGameMoves, getGamesByUser, createGame, getGameById, joinGame } from "../models/game";
+import { Game, Move, Position, updateGameMoves, getGamesByUser, createGame, getGameById, joinGame, getAllGames } from "../models/game";
 
 export function inBounds(row: number, col: number): boolean {
   return Number.isInteger(row) && Number.isInteger(col) && row >= 0 && row < 3 && col >= 0 && col < 3;
@@ -103,6 +103,10 @@ export function  getGameService(gameId: number) : Promise<Game | null> {
 
 export function joinGameService(gameId: number, userId: number) : Promise<Game | null> {
   return joinGame(gameId, userId);
+}
+
+export function getAllGamesService() : Promise<Game[]> {
+  return getAllGames();
 }
 
 export function getAvailableMoves(game: Game): Position[] {

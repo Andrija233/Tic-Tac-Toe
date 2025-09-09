@@ -9,5 +9,6 @@ router.post("/join/:id", auth, GameController.joinGame);
 router.post("/move/:id", auth, GameController.makeMove);
 router.get("/:id", auth, GameController.getGame);
 router.get("/history/me", auth, GameController.getUserGames);
+router.get("/history/all", auth, GameController.getAllGames);
 
 export default router;
