@@ -5,9 +5,9 @@ import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import GamePage from "./pages/Game";
-import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import ProtectedRoute from "./components/ProtectedRoute";
+import { AppLayout } from "./components/AppLayout";
 
 
 export default function App() {
@@ -15,30 +15,27 @@ export default function App() {
     <AuthProvider>
       <ToastProvider>
         <BrowserRouter>
-          <Navbar />
           <Routes>
-            <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
 
-            
+            <Route path="/" element={<AppLayout><Home /></AppLayout>} />
             <Route
               path="/dashboard"
               element={
-                <ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
+              <ProtectedRoute>
+                <AppLayout><Dashboard /></AppLayout>
+              </ProtectedRoute>
               }
             />
             <Route
               path="/game/:id"
               element={
-                <ProtectedRoute>
-                  <GamePage />
-                </ProtectedRoute>
+              <ProtectedRoute>
+                <AppLayout><GamePage /></AppLayout>
+              </ProtectedRoute>
               }
             />
-
            
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>

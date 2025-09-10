@@ -20,20 +20,30 @@ export default function GamePage() {
 
   useEffect(() => {
     if (!auth?.token || !id) return;
-    getGame(auth.token, Number(id))
-      .then(setGame)
-      .catch(() => showToast("Failed to load game", "ERROR"));
+
+    const token = auth.token;
+    const gameId = Number(id);
+    const fetchGame = async () => {
+    try {
+      const gameData = await getGame(token, gameId);
+      setGame(gameData);
+    } catch {
+      showToast("Failed to load game", "ERROR");
+    }
+  };
+
+  fetchGame();
 
     
-    socket.emit("joinGame", Number(id));
+  socket.emit("joinGame", Number(id));
 
-    socket.on("move", (updated: Game) => {
-      setGame(updated);
-    });
+  socket.on("move", (updated: Game) => {
+    setGame(updated);
+  });
 
-    return () => {
-      socket.off("move");
-    };
+  return () => {
+    socket.off("move");
+  };
   }, [id, auth?.token, showToast]);
 
   const handleMove = async (row: number, col: number) => {

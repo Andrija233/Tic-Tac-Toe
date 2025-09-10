@@ -22,13 +22,23 @@ export default function Dashboard() {
   useEffect(() => {
     if (!auth?.token) return;
 
-    getHistory(auth.token)
-      .then(setGames)
-      .catch(() => showToast("Failed to load history", "ERROR"));
+    const token = auth.token;
 
-    getAllGames(auth.token)
-      .then(setAllGames)
-      .catch(() => showToast("Failed to load all games", "ERROR"));
+  const fetchData = async () => {
+    try {
+      const [history, all] = await Promise.all([
+        getHistory(token),
+        getAllGames(token)
+      ]);
+
+      setGames(history);
+      setAllGames(all);
+    } catch {
+      showToast("Failed to load game data", "ERROR");
+    }
+  };
+
+  fetchData();
 
 
   const handleAllGamesUpdated = (games: Game[]) => {

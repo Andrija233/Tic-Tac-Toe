@@ -6,7 +6,18 @@ type Props = {
   onMove: (row: number, col: number) => void;
 };
 
+type Move = {
+  row: number;
+  col: number;
+  player: string;
+};
+
 export default function GameBoard({ game, onMove }: Props) {
+  const handleCellClick = (row: number, col: number, move: Move | undefined) => {
+    if (!move && game.status === "ongoing") {
+      onMove(row, col);
+    }
+  };
   return (
     <Grid container spacing={1} sx={{ width: 320, margin: "0 auto" }}>
       {Array.from({ length: 3 }, (_, row) =>
@@ -34,7 +45,7 @@ export default function GameBoard({ game, onMove }: Props) {
                   },
                   color: move && move.player === "X" ? "#3f51b5" : "#f50057",
                 }}
-                onClick={() => !move && game.status === "ongoing" && onMove(row, col)}
+                onClick={() => handleCellClick(row, col, move)}
               >
                 {move ? move.player : ""}
               </Paper>
