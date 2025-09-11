@@ -4,9 +4,10 @@ import type { Game } from "../../types/game";
 type Props = {
   games: Game[];
   allGames: Game[];
+  wins: number;
 };
 
-export default function DashboardStats({ games, allGames }: Props) {
+export default function DashboardStats({ games, allGames, wins }: Props) {
   return (
     <Box
       sx={{
@@ -34,7 +35,7 @@ export default function DashboardStats({ games, allGames }: Props) {
       </Paper>
       <Paper sx={{ p: 2, textAlign: "center", borderRadius: 2 }}>
         <Typography variant="h4" sx={{ color: "#4CAF50", fontWeight: "bold" }}>
-          {games.filter((g) => g.status === "finished" && g.winner === "X").length}
+          {wins}
         </Typography>
         <Typography variant="body2" color="text.secondary">
           Wins

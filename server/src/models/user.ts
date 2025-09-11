@@ -16,11 +16,9 @@ CREATE TABLE IF NOT EXISTS users (
 );`;
 
 
-export const createUser = async (username: string, hashedPassword: string) => {
-  return pool.query(
-    "INSERT INTO users (username, password) VALUES ($1, $2) RETURNING *",
-    [username, hashedPassword]
-  );
+export const createUser = async (username: string, hashedPassword: string) : Promise<User | undefined> => {
+  const result = await pool.query("INSERT INTO users (username, password) VALUES ($1, $2) RETURNING *", [username, hashedPassword]);
+  return result.rows[0];
 };
 
 export const findUserByUsername = async (username: string): Promise<User | undefined> => {

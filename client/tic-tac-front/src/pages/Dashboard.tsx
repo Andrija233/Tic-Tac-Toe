@@ -11,6 +11,7 @@ import DashboardStats from "../components/dashboard/DashboardStats";
 import ActiveGames from "../components/dashboard/ActiveGames";
 import GameList from "../components/dashboard/GameList";
 import MultiplayerGames from "../components/dashboard/MultiplayerGames";
+import { calculateWins } from "../utils/gameStats";
 
 export default function Dashboard() {
   const auth = useContext(AuthContext);
@@ -74,10 +75,12 @@ export default function Dashboard() {
     }
   };
 
+  const wins = calculateWins(allGames, auth?.user?.id);
+
   return (
     <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: 1200, mx: "auto" }}>
       <DashboardHeader onCreateGame={handleCreateGame} />
-      <DashboardStats games={games} allGames={allGames} />
+      <DashboardStats games={games} allGames={allGames} wins={wins} />
       <ActiveGames games={games} onCreateGame={handleCreateGame} />
       <GameList games={games} />
       <MultiplayerGames allGames={allGames} onJoinGame={handleJoinGame} onCreateGame={handleCreateGame} />

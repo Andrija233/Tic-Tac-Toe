@@ -13,9 +13,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     const savedToken = localStorage.getItem("token");
-    if (savedToken) {
-      setToken(savedToken);
-    }
+    const savedUser = localStorage.getItem("user");
+
+    if (savedToken) { 
+	    setToken(savedToken);
+	  }
+    if (savedUser) {
+	    setUser(JSON.parse(savedUser));
+	  }
+
     setLoading(false);
   }, []);
 
@@ -24,6 +30,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setUser(res.user);
     setToken(res.token);
     localStorage.setItem("token", res.token);
+    localStorage.setItem("user", JSON.stringify(res.user));
   };
 
   const handleRegister = async (username: string, password: string) => {
@@ -31,12 +38,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setUser(res.user);
     setToken(res.token);
     localStorage.setItem("token", res.token);
+    localStorage.setItem("user", JSON.stringify(res.user));
   };
 
   const handleLogout = () => {
     setUser(null);
     setToken(null);
     localStorage.removeItem("token");
+    localStorage.removeItem("user");
   };
 
   const value: AuthContextType = {
