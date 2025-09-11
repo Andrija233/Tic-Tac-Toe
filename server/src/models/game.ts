@@ -89,3 +89,8 @@ export async function getGamesByUser(userId: number): Promise<Game[]> {
   );
   return result.rows;
 }
+
+export async function getAllGames(): Promise<Game[]> {
+  const result = await pool.query(`SELECT * FROM games ORDER BY created_at DESC`);
+  return result.rows;
+}
