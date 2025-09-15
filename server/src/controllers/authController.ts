@@ -12,20 +12,18 @@ export const register = async (req: Request, res: Response) => {
   }
 
   try {
-    await registerUser(username, password);
-    return res.json({ message: "✅ User registered" });
+    const {token, user} = await registerUser(username, password);
+    res.json({ token, user });
   } catch (err: unknown) {
     if (!(err instanceof Error)) {
       return res.status(500).json({ error: "Unknown server error" });
     }
 
-    const dbErr = err as DatabaseError;
-
-    if (dbErr.code === "23505") {
-      return res.status(400).json({ error: "Username already exists" });
+    if (err.message === "Username already exists") {
+      return res.status(400).json({ error: err.message });
     }
 
-    return res.status(500).json({ error: dbErr.message });
+    return res.status(500).json({ error: err.message });
   }
 };
 
@@ -36,8 +34,8 @@ export const login = async (req: Request, res: Response) => {
   }
 
   try {
-    const token = await loginUser(username, password);
-    res.json({ token });
+    const { token, user} = await loginUser(username, password);
+    res.json({ token, user });
   } catch (err: unknown) {
     if (err instanceof Error) {
       return res.status(400).json({ error: err.message });

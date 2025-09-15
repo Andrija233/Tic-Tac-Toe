@@ -7,9 +7,28 @@ interface JwtPayload {
   username: string;
 }
 
-export const registerUser = async (username: string, password: string) => {
-  const hashed = await bcrypt.hash(password, 10);
-  return createUser(username, hashed);
+export const registerUser = async (username: string, password: string ) => {
+  const existingUser = await findUserByUsername(username);
+  if (existingUser) {
+    throw new Error("Username already exists");
+  }
+  const hashedPassword = await bcrypt.hash(password, 10);
+  const user = await createUser(username, hashedPassword);
+
+   if (!user) {
+    throw new Error("Failed to create user");
+  }
+  
+  const token = jwt.sign(
+    { id: user.id, username: user.username } as JwtPayload,
+    process.env.JWT_SECRET as string,
+    { expiresIn: "1h" }
+  );
+
+  return { token, user: { 
+    id: user.id, username: user.username 
+    } 
+  };
 };
 
 export const loginUser = async (username: string, password: string) => {
@@ -29,5 +48,8 @@ export const loginUser = async (username: string, password: string) => {
     { expiresIn: "1h" }
   );
 
-  return token;
+  return { token, user: { 
+    id: user.id, username: user.username 
+    } 
+  };
 };
