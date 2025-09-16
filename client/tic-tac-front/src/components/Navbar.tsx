@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { AppBar, Toolbar, Typography, Box, Chip } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
-import { AuthContext } from "../context/AuthContext";
+import { AuthContext } from "../context/AuthGraphContext";
 import { SportsEsports as GameIcon } from "@mui/icons-material";
 import { useToast } from "../context/ToastContext";
 import { LoggedInButtonSet } from "./navbar/LoggedInButtonSet";

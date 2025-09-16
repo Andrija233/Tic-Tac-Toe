@@ -1,7 +1,7 @@
 import { Box } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../context/AuthContext";
-import { createGame, getHistory, joinGame, getAllGames } from "../api/game";
+import { AuthContext } from "../context/AuthGraphContext";
+import { getMyGames, getAllGames, createGame, joinGame } from "../api/graphql/game";
 import { useNavigate } from "react-router-dom";
 import type { Game } from "../types/game";
 import { socket } from "../api/socket";
@@ -23,13 +23,11 @@ export default function Dashboard() {
   useEffect(() => {
     if (!auth?.token) return;
 
-    const token = auth.token;
-
   const fetchData = async () => {
     try {
       const [history, all] = await Promise.all([
-        getHistory(token),
-        getAllGames(token)
+        getMyGames(),
+        getAllGames()
       ]);
 
       setGames(history);
@@ -56,7 +54,7 @@ export default function Dashboard() {
   const handleCreateGame = async (type: "single" | "multi") => {
     if (!auth?.token) return;
     try {
-      const game = await createGame(auth.token, type);
+      const game = await createGame(type);
       setGames([game, ...games]);
       navigate(`/game/${game.id}`);
     } catch {
@@ -67,7 +65,7 @@ export default function Dashboard() {
   const handleJoinGame = async (gameId: number) => {
     if (!auth?.token) return;
     try {
-      const game = await joinGame(auth.token, gameId);
+      const game = await joinGame(gameId);
       setGames([game, ...games]);
       navigate(`/game/${game.id}`);
     } catch {

@@ -1,7 +1,7 @@
 import { Box, Typography, Button, Paper, Container } from "@mui/material";
 import { Link, Navigate } from "react-router-dom";
 import { useContext } from "react";
-import { AuthContext } from "../context/AuthContext";
+import { AuthContext } from "../context/AuthGraphContext";
 
 export default function Home() {
   const auth = useContext(AuthContext);
