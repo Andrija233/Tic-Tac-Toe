@@ -32,7 +32,7 @@ export const LOGIN = gql`
   ${AUTH_RESPONSE_FIELDS}
 `;
 
-export async function register(username: string, password: string) : Promise<AuthResponse | undefined> {
+export const register = async(username: string, password: string) : Promise<AuthResponse | undefined> => {
   try{
     const res = await client.mutate<ResponseRegister>({
     mutation: REGISTER,
@@ -47,7 +47,7 @@ export async function register(username: string, password: string) : Promise<Aut
   }
 }
 
-export async function login(username: string, password: string) : Promise<AuthResponse | undefined> {
+export const login = async(username: string, password: string) : Promise<AuthResponse | undefined> => {
   try {
     const res = await client.mutate<ResponseLogin>({
     mutation: LOGIN,

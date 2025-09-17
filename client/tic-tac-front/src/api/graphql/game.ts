@@ -83,7 +83,7 @@ export const GET_GAME = gql`
 `;
 
 
-export async function createGame(type: "single" | "multi"): Promise<Game> {
+export const createGame = async(type: "single" | "multi"): Promise<Game> => {
   try {
     const res = await client.mutate<CreateGameResponse>({
       mutation: CREATE_GAME,
@@ -98,7 +98,7 @@ export async function createGame(type: "single" | "multi"): Promise<Game> {
   }
 }
 
-export async function joinGame(gameId: number): Promise<Game> {
+export const joinGame = async(gameId: number): Promise<Game> => {
   try {
     const res = await client.mutate<JoinGameResponse>({
       mutation: JOIN_GAME,
@@ -113,11 +113,7 @@ export async function joinGame(gameId: number): Promise<Game> {
   }
 }
 
-export async function makeMove(
-  gameId: number,
-  row: number,
-  col: number
-): Promise<Game> {
+export const makeMove = async( gameId: number, row: number, col: number): Promise<Game> => {
   try {
     const res = await client.mutate<MakeMoveResponse>({
       mutation: MAKE_MOVE,
@@ -132,7 +128,7 @@ export async function makeMove(
   }
 }
 
-export async function getMyGames(): Promise<Game[]> {
+export const getMyGames = async(): Promise<Game[]> => {
   try {
     const res = await client.query<MyGamesResponse>({
       query: MY_GAMES,
@@ -147,7 +143,7 @@ export async function getMyGames(): Promise<Game[]> {
   }
 }
 
-export async function getAllGames(): Promise<Game[]> {
+export const getAllGames = async(): Promise<Game[]> => {
   try {
     const res = await client.query<GetAllGamesResponse>({
       query: ALL_GAMES,
@@ -162,7 +158,7 @@ export async function getAllGames(): Promise<Game[]> {
   }
 }
 
-export async function getGame(id: number): Promise<Game> {
+export const getGame = async(id: number): Promise<Game> => {
   try {
     const res = await client.query<GetGameResponse>({
       query: GET_GAME,
