@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import AuthForm from "../components/AuthForm";
-import { AuthContext } from "../context/AuthContext";
+import { AuthContext } from "../context/AuthGraphContext";
 import {useToast } from "../context/ToastContext";
 import { useNavigate } from "react-router-dom";
 

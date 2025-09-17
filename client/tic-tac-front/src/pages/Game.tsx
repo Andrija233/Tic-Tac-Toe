@@ -1,8 +1,8 @@
 import { useContext, useEffect, useState } from "react";
 import { Box, Typography, Paper } from "@mui/material";
 import { useParams } from "react-router-dom";
-import { AuthContext } from "../context/AuthContext";
-import { getGame, makeMove } from "../api/game";
+import { AuthContext } from "../context/AuthGraphContext";
+import { getGame, makeMove } from "../api/graphql/game";
 import { socket } from "../api/socket";
 import type { Game } from "../types/game";
 import { useToast } from "../context/ToastContext";
@@ -21,11 +21,10 @@ export default function GamePage() {
   useEffect(() => {
     if (!auth?.token || !id) return;
 
-    const token = auth.token;
     const gameId = Number(id);
     const fetchGame = async () => {
     try {
-      const gameData = await getGame(token, gameId);
+      const gameData = await getGame(gameId);
       setGame(gameData);
     } catch {
       showToast("Failed to load game", "ERROR");
@@ -56,12 +55,7 @@ export default function GamePage() {
     }
 
     try {
-      const updated = await makeMove(auth.token, game.id, {
-        row,
-        col,
-        player: game.current_turn,
-        timestamp: new Date().toISOString(),
-      });
+      const updated = await makeMove(game.id, row, col);
       setGame(updated);
     } catch {
       showToast("Invalid move!", "ERROR");
