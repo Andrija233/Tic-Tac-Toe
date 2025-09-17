@@ -4,32 +4,28 @@ import type { ResponseLogin, ResponseRegister } from "../../types/graph";
 import type { AuthResponse } from "../auth";
 import { handleGraphqlError } from "../../utils/handleGraphError";
 
-export const AUTH_RESPONSE_FIELDS = gql`
-  fragment AuthResponseFields on AuthResponse {
-    token
-    user {
-      id
-      username
-    }
-  }
-`;
-
 export const REGISTER = gql`
   mutation Register($username: String!, $password: String!) {
     register(username: $username, password: $password) {
-      ...AuthResponseFields
+      token
+      user {
+        id
+        username
+      }
     }
   }
-  ${AUTH_RESPONSE_FIELDS}
 `;
 
 export const LOGIN = gql`
   mutation Login($username: String!, $password: String!) {
     login(username: $username, password: $password) {
-      ...AuthResponseFields
+      token
+      user {
+        id
+        username
+      }
     }
   }
-  ${AUTH_RESPONSE_FIELDS}
 `;
 
 export const register = async(username: string, password: string) : Promise<AuthResponse | undefined> => {

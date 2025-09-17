@@ -13,5 +13,43 @@ services:
     volumes:
       - db_data:/var/lib/postgresql/data
 
+  backend:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: backend
+    restart: always
+    environment:
+      DB_USER: postgres
+      DB_PASS: postgres
+      DB_NAME: tictactoe
+      DB_HOST: postgres
+      DB_PORT: 5432
+      JWT_SECRET: supersecret
+      PORT: 4000
+    ports:
+      - "4000:4000"
+    depends_on:
+      - postgres
+    volumes:
+      - ./server:/app
+      - /app/node_modules
+
+  frontend:
+    build:
+      context: ./client/tic-tac-front
+      dockerfile: Dockerfile
+    container_name: frontend
+    restart: always
+    environment:
+      VITE_API_URL: http://localhost:4000
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+    volumes:
+      - ./client/tic-tac-front:/app
+      - /app/node_modules
+
 volumes:
   db_data:
